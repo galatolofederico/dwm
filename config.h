@@ -1,5 +1,12 @@
 /* See LICENSE file for copyright and license details. */
 
+/*   Display modes of the tab bar: never shown, always shown, shown only in  */
+/*   monocle mode in presence of several windows.                            */
+/*   A mode can be disabled by moving it after the showtab_nmodes end marker */
+enum showtab_modes { showtab_never, showtab_auto, showtab_nmodes, showtab_always};
+static const int showtab            = showtab_auto; /* Default tab bar show mode  */
+static const Bool toptab            = True;         /* False means bottom tab bar */
+
 /* appearance */
 static const char *fonts[] = {
    "DejaVuSansMono Nerd Font:style=Book:size=12"
@@ -22,6 +29,12 @@ static const int topbar             = 1;        /* 0 means bottom bar */
 
 /* tagging */
 static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+
+/* default layout per tags */
+/* The first element is for all-tag view, following i-th element corresponds to */
+/* tags[i]. Layout is referred using the layouts array index.*/
+static int def_layouts[1 + LENGTH(tags)]  = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
 
 static const Rule rules[] = {
 	/* xprop(1):

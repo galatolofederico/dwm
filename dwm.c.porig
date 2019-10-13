@@ -555,12 +555,13 @@ cleanup(void)
 	Arg a = {.ui = ~0};
 	Layout foo = { "", NULL };
 	Monitor *m;
+	size_t i;
 
 	view(&a);
 	selmon->lt[selmon->sellt] = &foo;
 	for (m = mons; m; m = m->next)
-		while(m->stack)
-			unmanage(m->stack, False);
+		while (m->stack)
+			unmanage(m->stack, 0);
 	XUngrabKey(dpy, AnyKey, AnyModifier, root);
 	while (mons)
 		cleanupmon(mons);
@@ -569,15 +570,13 @@ cleanup(void)
 		XDestroyWindow(dpy, systray->win);
 		free(systray);
 	}
-	drw_cur_free(drw, cursor[CurNormal]);
-	drw_cur_free(drw, cursor[CurResize]);
-	drw_cur_free(drw, cursor[CurMove]);
-	drw_clr_free(scheme[SchemeNorm].border);
-	drw_clr_free(scheme[SchemeNorm].bg);
-	drw_clr_free(scheme[SchemeNorm].fg);
-	drw_clr_free(scheme[SchemeSel].border);
-	drw_clr_free(scheme[SchemeSel].bg);
-	drw_clr_free(scheme[SchemeSel].fg);
+	for (i = 0; i < CurLast; i++)
+		drw_cur_free(drw, cursor[i]);
+	for (i = 0; i < SchemeLast; i++) {
+		drw_clr_free(scheme[i].border);
+		drw_clr_free(scheme[i].bg);
+		drw_clr_free(scheme[i].fg);
+	}
 	drw_free(drw);
 	XSync(dpy, False);
 	XSetInputFocus(dpy, PointerRoot, RevertToPointerRoot, CurrentTime);
@@ -715,14 +714,7 @@ configurenotify(XEvent *e)
 		if (updategeom() || dirty) {
 			drw_resize(drw, sw, bh);
 			updatebars();
-			//refreshing display of status bar. The tab bar is handled by the arrange()
-			//method, which is called below
-			for(m = mons; m; m = m->next){
-				for (c = m->clients; c; c = c->next)
-					if (c->isfullscreen)
-						resizeclient(c, m->mx, m->my, m->mw, m->mh);
-				XMoveResizeWindow(dpy, m->barwin, m->wx, m->by, m->ww, bh);
-			}
+			resizebarwin(m);
 			focus(NULL);
 			arrange(NULL);
 		}
@@ -1082,9 +1074,10 @@ expose(XEvent *e)
 	Monitor *m;
 	XExposeEvent *ev = &e->xexpose;
 
-	if (ev->count == 0 && (m = wintomon(ev->window))){
+	if (ev->count == 0 && (m = wintomon(ev->window))) {
 		drawbar(m);
-		drawtab(m);
+		if (m == selmon)
+			updatesystray();
 	}
 }
 
@@ -2113,7 +2106,7 @@ tile(Monitor *m)
 void
 togglebar(const Arg *arg)
 {
-	selmon->showbar = selmon->pertag->showbars[selmon->pertag->curtag] = !selmon->showbar;
+	selmon->showbar = !selmon->showbar;
 	updatebarpos(selmon);
 	resizebarwin(selmon);
 	if (showsystray) {
@@ -2131,22 +2124,11 @@ togglebar(const Arg *arg)
 }
 
 void
-tabmode(const Arg *arg)
-{
-	if(arg && arg->i >= 0)
-		selmon->showtab = arg->ui % showtab_nmodes;
-	else
-		selmon->showtab = (selmon->showtab + 1 ) % showtab_nmodes;
-	arrange(selmon);
-}
-
-
-void
 togglefloating(const Arg *arg)
 {
-	if(!selmon->sel)
+	if (!selmon->sel)
 		return;
-	if(selmon->sel->isfullscreen) /* no support for fullscreen windows */
+	if (selmon->sel->isfullscreen) /* no support for fullscreen windows */
 		return;
 	selmon->sel->isfloating = !selmon->sel->isfloating || selmon->sel->isfixed;
 	if (selmon->sel->isfloating)
