@@ -73,7 +73,7 @@ static const Layout layouts[] = {
 /* default layout per tags */
 /* The first element is for all-tag view, following i-th element corresponds to */
 /* tags[i]. Layout is referred using the layouts array index.*/
-static int def_layouts[1 + LENGTH(tags)]  = {4, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+static int def_layouts[1 + LENGTH(tags)]  = {4, 0, 0, 0, 0, 0, 0, 0, 0, 2};
 
 
 
