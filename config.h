@@ -20,6 +20,9 @@ static const char *lightup[] =   { "/usr/bin/xbacklight", "-inc",   "5", NULL };
 static const char *lightdown[] = { "/usr/bin/xbacklight", "-dec",   "5", NULL };
 static const char *full_screenshot[] = { "/bin/bash", "-c", "escrotum ~/Pictures/Screenshots/$(date +%s).png && notify-send 'Screenshot saved'", NULL };
 static const char *sel_screenshot[] = { "/usr/bin/escrotum", "-s", "-C", NULL };
+static const char *favourites_apps[] = { "/bin/sh", "-c", " ~/bin/dmenu_favourites ~/.config/favourites/apps", NULL };
+static const char *favourites_sett[] = { "/bin/sh", "-c", " ~/bin/dmenu_favourites ~/.config/favourites/settings", NULL };
+static const char *favourites_exit[] = { "/bin/sh", "-c", " ~/bin/dmenu_favourites ~/.config/favourites/exit", NULL };
 
 
 
@@ -100,6 +103,9 @@ static Key keys[] = {
 	{ 0,           XF86XK_MonBrightnessDown,   spawn,          {.v = lightdown   } },
 	{ 0,                            XK_Print,  spawn,          {.v = sel_screenshot   } },
 	{ ShiftMask,                    XK_Print,  spawn,          {.v = full_screenshot   } },
+	{ MODKEY,                       XK_o,      spawn,      	   {.v = favourites_apps} },
+	{ MODKEY,                       XK_s,      spawn,      	   {.v = favourites_sett} },
+	{ MODKEY,                       XK_Escape, spawn,      	   {.v = favourites_exit} },
 	{ MODKEY,                       XK_g,      setlayout,      {.v = &layouts[4] } },
 	{ MODKEY,                       XK_space,  spawn,          {.v = j4cmd } },
 	{ MODKEY|ShiftMask,             XK_space,  spawn,          {.v = dmenucmd } },
