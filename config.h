@@ -3,6 +3,8 @@
 /*   Display modes of the tab bar: never shown, always shown, shown only in  */
 /*   monocle mode in presence of several windows.                            */
 /*   A mode can be disabled by moving it after the showtab_nmodes end marker */
+#include <X11/XF86keysym.h>
+
 enum showtab_modes { showtab_never, showtab_auto, showtab_nmodes, showtab_always};
 static const int showtab            = showtab_auto; /* Default tab bar show mode  */
 static const Bool toptab            = False;         /* False means bottom tab bar */
@@ -11,6 +13,12 @@ static const Bool toptab            = False;         /* False means bottom tab b
 static const char *fonts[] = {
    "DejaVuSansMono Nerd Font:style=Book:size=12"
 };
+static const char *upvol[]   =   { "/usr/bin/pactl", "set-sink-volume", "0", "+5%",     NULL };
+static const char *downvol[] =   { "/usr/bin/pactl", "set-sink-volume", "0", "-5%",     NULL };
+static const char *mutevol[] =   { "/usr/bin/pactl", "set-sink-mute",   "0", "toggle",  NULL };
+static const char *lightup[] =   { "/usr/bin/xbacklight", "-inc",   "5", NULL };
+static const char *lightdown[] = { "/usr/bin/xbacklight", "-dec",   "5", NULL };
+
 static const char dmenufont[]       = "DejaVuSansMono Nerd Font:style=Book:size=10";
 static const char normbordercolor[] = "#002b36";
 static const char normbgcolor[]     = "#002b36";
@@ -80,6 +88,11 @@ static const char *termcmd[]  = { "st", NULL };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
+	{ 0,              XF86XK_AudioLowerVolume, spawn,          {.v = downvol } },
+	{ 0,                     XF86XK_AudioMute, spawn,          {.v = mutevol } },
+	{ 0,              XF86XK_AudioRaiseVolume, spawn,          {.v = upvol   } },
+	{ 0,           XF86XK_MonBrightnessUp,     spawn,          {.v = lightup   } },
+	{ 0,           XF86XK_MonBrightnessDown,   spawn,          {.v = lightdown   } },
 	{ MODKEY,                       XK_g,      setlayout,      {.v = &layouts[4] } },
 	{ MODKEY,                       XK_space,  spawn,          {.v = dmenucmd } },
 	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
