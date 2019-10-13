@@ -18,6 +18,10 @@ static const char *downvol[] =   { "/usr/bin/pactl", "set-sink-volume", "0", "-5
 static const char *mutevol[] =   { "/usr/bin/pactl", "set-sink-mute",   "0", "toggle",  NULL };
 static const char *lightup[] =   { "/usr/bin/xbacklight", "-inc",   "5", NULL };
 static const char *lightdown[] = { "/usr/bin/xbacklight", "-dec",   "5", NULL };
+static const char *full_screenshot[] = { "/bin/bash", "-c", "escrotum ~/Pictures/Screenshots/$(date +%s).png && notify-send 'Screenshot saved'", NULL };
+static const char *sel_screenshot[] = { "/usr/bin/escrotum", "-s", "-C", NULL };
+
+
 
 static const char dmenufont[]       = "DejaVuSansMono Nerd Font:style=Book:size=10";
 static const char normbordercolor[] = "#002b36";
@@ -93,6 +97,8 @@ static Key keys[] = {
 	{ 0,              XF86XK_AudioRaiseVolume, spawn,          {.v = upvol   } },
 	{ 0,           XF86XK_MonBrightnessUp,     spawn,          {.v = lightup   } },
 	{ 0,           XF86XK_MonBrightnessDown,   spawn,          {.v = lightdown   } },
+	{ 0,                            XK_Print,  spawn,          {.v = sel_screenshot   } },
+	{ ShiftMask,                    XK_Print,  spawn,          {.v = full_screenshot   } },
 	{ MODKEY,                       XK_g,      setlayout,      {.v = &layouts[4] } },
 	{ MODKEY,                       XK_space,  spawn,          {.v = dmenucmd } },
 	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
