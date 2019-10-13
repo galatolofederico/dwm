@@ -4,7 +4,7 @@
 static const char *fonts[] = {
    "DejaVuSansMono Nerd Font:style=Book:size=12"
 };
-static const char dmenufont[]       = "monospace:size=10";
+static const char dmenufont[]       = "DejaVuSansMono Nerd Font:style=Book:size=10";
 static const char normbordercolor[] = "#002b36";
 static const char normbgcolor[]     = "#002b36";
 static const char normfgcolor[]     = "#657b83";
