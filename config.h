@@ -5,12 +5,12 @@ static const char *fonts[] = {
    "DejaVuSansMono Nerd Font:style=Book:size=12"
 };
 static const char dmenufont[]       = "monospace:size=10";
-static const char normbordercolor[] = "#444444";
-static const char normbgcolor[]     = "#222222";
-static const char normfgcolor[]     = "#bbbbbb";
-static const char selbordercolor[]  = "#005577";
-static const char selbgcolor[]      = "#005577";
-static const char selfgcolor[]      = "#eeeeee";
+static const char normbordercolor[] = "#002b36";
+static const char normbgcolor[]     = "#002b36";
+static const char normfgcolor[]     = "#657b83";
+static const char selbordercolor[]  = "#93a1a1";
+static const char selbgcolor[]      = "#93a1a1";
+static const char selfgcolor[]      = "#002b36";
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const unsigned int systraypinning = 0;   /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
