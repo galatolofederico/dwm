@@ -1,0 +1,3 @@
+[submodule "j4-dmenu-desktop"]
+	path = j4-dmenu-desktop
+	url = https://github.com/enkore/j4-dmenu-desktop.git
