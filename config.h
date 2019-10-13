@@ -5,7 +5,7 @@
 /*   A mode can be disabled by moving it after the showtab_nmodes end marker */
 enum showtab_modes { showtab_never, showtab_auto, showtab_nmodes, showtab_always};
 static const int showtab            = showtab_auto; /* Default tab bar show mode  */
-static const Bool toptab            = True;         /* False means bottom tab bar */
+static const Bool toptab            = False;         /* False means bottom tab bar */
 
 /* appearance */
 static const char *fonts[] = {
@@ -30,12 +30,6 @@ static const int topbar             = 1;        /* 0 means bottom bar */
 /* tagging */
 static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 
-/* default layout per tags */
-/* The first element is for all-tag view, following i-th element corresponds to */
-/* tags[i]. Layout is referred using the layouts array index.*/
-static int def_layouts[1 + LENGTH(tags)]  = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-
-
 static const Rule rules[] = {
 	/* xprop(1):
 	 *	WM_CLASS(STRING) = instance, class
@@ -50,7 +44,7 @@ static const Rule rules[] = {
 /* layout(s) */
 static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
 static const int nmaster     = 1;    /* number of clients in master area */
-static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
+static const int resizehints = 0;    /* 1 means respect size hints in tiled resizals */
 
 #include "gaplessgrid.c"
 static const Layout layouts[] = {
@@ -61,6 +55,11 @@ static const Layout layouts[] = {
 	{ "centeredmaster", centeredmaster },
 	{ "grid",           gaplessgrid },
 };
+/* default layout per tags */
+/* The first element is for all-tag view, following i-th element corresponds to */
+/* tags[i]. Layout is referred using the layouts array index.*/
+static int def_layouts[1 + LENGTH(tags)]  = {4, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
 
 
 /* key definitions */
@@ -101,8 +100,8 @@ static Key keys[] = {
  	{ MODKEY|ShiftMask,             XK_j,      cyclelayout,    {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_k,      cyclelayout,    {.i = +1 } },
 	//{ MODKEY,                       XK_o,      setlayout,      {.v = &layouts[4]} },
-	{ MODKEY,                       XK_space,  setlayout,      {0} },
-	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
+	//{ MODKEY,                       XK_space,  setlayout,      {0} },
+	//{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
 	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
