@@ -23,6 +23,7 @@ static const char *sel_screenshot[] = { "/usr/bin/escrotum", "-s", "-C", NULL };
 static const char *favourites_apps[] = { "/bin/sh", "-c", " ~/bin/dmenu_favourites ~/.config/favourites/apps", NULL };
 static const char *favourites_sett[] = { "/bin/sh", "-c", " ~/bin/dmenu_favourites ~/.config/favourites/settings", NULL };
 static const char *favourites_exit[] = { "/bin/sh", "-c", " ~/bin/dmenu_favourites ~/.config/favourites/exit", NULL };
+static const char *clipmenu[] = { "/usr/bin/clipmenu", NULL };
 
 
 
@@ -51,8 +52,9 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor */
-	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ NULL,      "floating",  NULL,       0,            1,           -1 },
+	{ "Gimp",     NULL,            NULL,       0,            1,           -1 },
+	{ NULL,      "floating",       NULL,       0,            1,           -1 },
+	{ NULL,      "surf-floating",  NULL,       0,            1,           -1 },
 	
 };
 
@@ -102,6 +104,7 @@ static Key keys[] = {
 	{ 0,           XF86XK_MonBrightnessUp,     spawn,          {.v = lightup   } },
 	{ 0,           XF86XK_MonBrightnessDown,   spawn,          {.v = lightdown   } },
 	{ 0,                            XK_Print,  spawn,          {.v = sel_screenshot   } },
+	{ MODKEY,                       XK_v,      spawn,          {.v = clipmenu   } },
 	{ ShiftMask,                    XK_Print,  spawn,          {.v = full_screenshot   } },
 	{ MODKEY,                       XK_o,      spawn,      	   {.v = favourites_apps} },
 	{ MODKEY,                       XK_s,      spawn,      	   {.v = favourites_sett} },
