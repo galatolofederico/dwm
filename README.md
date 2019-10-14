@@ -8,3 +8,6 @@ I have applied the following patches:
 * dwm-cyclelayouts-20180524-6.2
 * dwm-gaplessgrid-6.1
 * dwm-6.1-pertag-tab-v2b
+
+
+requires: `nerd-fonts-complete`
