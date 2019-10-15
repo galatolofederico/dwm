@@ -2962,6 +2962,8 @@ void threequartersize(Client* c){
 	y = wh/4;
 	w = 3*ww/4;
 	h = 3*wh/4;
-	resizeclient(c, 50, 50, 100, 100);
-	log("resized");
+	x = c->mon->mx + c->mon->mw / 4 + (c->mon->mw / 2 - WIDTH(c) / 2);
+	y = c->mon->my + c->mon->mh / 4 + (c->mon->mh / 2 - HEIGHT(c) / 2);
+	// TODO: fare conti per bene
+	resizeclient(c, x, y, w, h);
 }
