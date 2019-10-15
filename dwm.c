@@ -286,6 +286,7 @@ static void zoom(const Arg *arg);
 static void centeredmaster(Monitor *m);
 static void centeredfloatingmaster(Monitor *m);
 static void togglefullscreen(const Arg *arg);
+static void log(const char *str, ...);
 
 /* variables */
 static Systray *systray = NULL;
@@ -357,13 +358,14 @@ applyrules(Client *c)
 	class    = ch.res_class ? ch.res_class : broken;
 	instance = ch.res_name  ? ch.res_name  : broken;
 
+	log("test %d\n", 10);
 	for (i = 0; i < LENGTH(rules); i++) {
 		r = &rules[i];
 		if ((!r->title || strstr(c->name, r->title))
 		&& (!r->class || strstr(class, r->class))
 		&& (!r->instance || strstr(instance, r->instance)))
 		{
-			if (r->hook) r->hook(c);
+			if (r->hook) (*r->hook)(c);
 			c->isfloating = r->isfloating;
 			c->tags |= r->tags;
 			for (m = mons; m && m->num != r->monitor; m = m->next);
@@ -2905,4 +2907,29 @@ void togglefullscreen(const Arg *arg)
 		setfullscreen(selmon->sel, 1);
     else if (selmon->sel->isfullscreen)
 		setfullscreen(selmon->sel, 0);
+}
+
+FILE* logfile = NULL;
+static void log(const char *str, ...){
+	if(!logfile) logfile = fopen("/tmp/dwm.log", "w");
+    
+	va_list args;
+    va_start(args, str);
+	
+	vfprintf(logfile, str, args);
+	fflush(logfile);
+
+	va_end(args);
+}
+
+void threequartersize(Client* c){
+	/*int x,y,w,h;
+	int ww, wh;
+	ww = c->mon->ww;
+	wh = c->mon->wh;
+	x = ww/4;
+	y = wh/4;
+	w = 3*ww/4;
+	h = 3*wh/4;
+	resizeclient(c, 0, 0, 100, 100);*/
 }

@@ -48,6 +48,7 @@ static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 
 void hooktest(Client* c){
 	c->isfloating=1;
+	threequartersize(c);
 }
 
 static const Rule rules[] = {
@@ -55,10 +56,10 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class      instance    title       tags mask     isfloating   monitor */
+	/* class      instance    title       tags mask     isfloating   monitor  hook*/
 	{ "Gimp",     NULL,            NULL,       0,            1,           -1, NULL },
 	{ NULL,      "floating",       NULL,       0,            1,           -1, NULL },
-	{ NULL,      "surf",           NULL,       0,            1,           -1, hooktest },
+	{ NULL,      "surf",           NULL,       0,            0,           -1, hooktest },
 	
 };
 
