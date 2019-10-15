@@ -167,6 +167,7 @@ typedef struct {
 	unsigned int tags;
 	int isfloating;
 	int monitor;
+	void (*hook)(Client*);
 } Rule;
 
 typedef struct Systray   Systray;
@@ -362,6 +363,7 @@ applyrules(Client *c)
 		&& (!r->class || strstr(class, r->class))
 		&& (!r->instance || strstr(instance, r->instance)))
 		{
+			if (r->hook) r->hook(c);
 			c->isfloating = r->isfloating;
 			c->tags |= r->tags;
 			for (m = mons; m && m->num != r->monitor; m = m->next);
