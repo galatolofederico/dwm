@@ -178,6 +178,7 @@ struct Systray {
 
 /* function declarations */
 static void applyrules(Client *c);
+static void applyhooks(Client *c);
 static int applysizehints(Client *c, int *x, int *y, int *w, int *h, int interact);
 static void arrange(Monitor *m);
 static void arrangemon(Monitor *m);
@@ -358,14 +359,12 @@ applyrules(Client *c)
 	class    = ch.res_class ? ch.res_class : broken;
 	instance = ch.res_name  ? ch.res_name  : broken;
 
-	log("test %d\n", 10);
 	for (i = 0; i < LENGTH(rules); i++) {
 		r = &rules[i];
 		if ((!r->title || strstr(c->name, r->title))
 		&& (!r->class || strstr(class, r->class))
 		&& (!r->instance || strstr(instance, r->instance)))
 		{
-			if (r->hook) (*r->hook)(c);
 			c->isfloating = r->isfloating;
 			c->tags |= r->tags;
 			for (m = mons; m && m->num != r->monitor; m = m->next);
@@ -379,6 +378,37 @@ applyrules(Client *c)
 		XFree(ch.res_name);
 	c->tags = c->tags & TAGMASK ? c->tags & TAGMASK : c->mon->tagset[c->mon->seltags];
 }
+
+applyhooks(Client *c)
+{
+	const char *class, *instance;
+	unsigned int i;
+	const Rule *r;
+	Monitor *m;
+	XClassHint ch = { NULL, NULL };
+
+	c->isfloating = 0;
+	c->tags = 0;
+	XGetClassHint(dpy, c->win, &ch);
+	class    = ch.res_class ? ch.res_class : broken;
+	instance = ch.res_name  ? ch.res_name  : broken;
+
+	for (i = 0; i < LENGTH(rules); i++) {
+		r = &rules[i];
+		if (r->hook 
+		&& (!r->title || strstr(c->name, r->title))
+		&& (!r->class || strstr(class, r->class))
+		&& (!r->instance || strstr(instance, r->instance)))
+			(*r->hook)(c);
+	}
+	if (ch.res_class)
+		XFree(ch.res_class);
+	if (ch.res_name)
+		XFree(ch.res_name);
+	c->tags = c->tags & TAGMASK ? c->tags & TAGMASK : c->mon->tagset[c->mon->seltags];
+}
+
+
 
 int
 applysizehints(Client *c, int *x, int *y, int *w, int *h, int interact)
@@ -1429,6 +1459,7 @@ manage(Window w, XWindowAttributes *wa)
 	arrange(c->mon);
 	XMapWindow(dpy, c->win);
 	focus(NULL);
+	applyhooks(c);
 }
 
 void
@@ -2923,7 +2954,7 @@ static void log(const char *str, ...){
 }
 
 void threequartersize(Client* c){
-	/*int x,y,w,h;
+	int x,y,w,h;
 	int ww, wh;
 	ww = c->mon->ww;
 	wh = c->mon->wh;
@@ -2931,5 +2962,6 @@ void threequartersize(Client* c){
 	y = wh/4;
 	w = 3*ww/4;
 	h = 3*wh/4;
-	resizeclient(c, 0, 0, 100, 100);*/
+	resizeclient(c, 50, 50, 100, 100);
+	log("resized");
 }
