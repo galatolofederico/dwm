@@ -284,6 +284,7 @@ static int xerrorstart(Display *dpy, XErrorEvent *ee);
 static void zoom(const Arg *arg);
 static void centeredmaster(Monitor *m);
 static void centeredfloatingmaster(Monitor *m);
+static void togglefullscreen(const Arg *arg);
 
 /* variables */
 static Systray *systray = NULL;
@@ -2891,4 +2892,15 @@ centeredfloatingmaster(Monitor *m)
 		       m->wh - (2*c->bw), 0);
 		tx += WIDTH(c);
 	}
+}
+
+void togglefullscreen(const Arg *arg)
+{
+    if (!selmon->sel)
+		return;
+
+    if (!selmon->sel->isfullscreen)
+		setfullscreen(selmon->sel, 1);
+    else if (selmon->sel->isfullscreen)
+		setfullscreen(selmon->sel, 0);
 }
