@@ -302,7 +302,7 @@ static void zoom(const Arg *arg);
 static void centeredmaster(Monitor *m);
 static void centeredfloatingmaster(Monitor *m);
 static void togglefullscreen(const Arg *arg);
-static void spreadfloatingcenter(Client *c, float coef);
+static void sfc(Client *c, float coef);
 static void log(const char *str, ...);
 static void ipclisten();
 
@@ -2972,7 +2972,7 @@ static void log(const char *str, ...){
 	va_end(args);
 }
 
-void spreadfloatingcenter(Client* c, float coef){
+void sfc(Client* c, float coef){
 	int x,y,w,h,ww,wh,ho,wo;
 
 	c->isfloating = 1;

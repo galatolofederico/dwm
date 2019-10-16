@@ -47,15 +47,15 @@ static const int topbar             = 1;        /* 0 means bottom bar */
 static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 
 
-int next_spreadfloatingcenter_flag = 0;
-void next_spreadfloatingcenter(){
-	next_spreadfloatingcenter_flag = 1;
+int next_sfc_flag = 0;
+void next_sfc(){
+	next_sfc_flag = 1;
 }
 
 void all_windows_hook(Client* c){
-	if(next_spreadfloatingcenter_flag){
-		spreadfloatingcenter(c, 0.85);
-		next_spreadfloatingcenter_flag = 0;
+	if(next_sfc_flag){
+		sfc(c, 0.85);
+		next_sfc_flag = 0;
 	}
 }
 
@@ -73,7 +73,7 @@ static const Rule rules[] = {
 
 
 static const IPCHook ipchooks[] = {
-	{ "next_spreadfloatingcenter",  next_spreadfloatingcenter },	
+	{ "next_sfc",  next_sfc },	
 };
 
 /* layout(s) */
