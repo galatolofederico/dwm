@@ -28,8 +28,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <signal.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/ipc.h> 
+#include <sys/msg.h> 
 #include <X11/cursorfont.h>
 #include <X11/keysym.h>
 #include <X11/Xatom.h>
@@ -176,6 +179,18 @@ struct Systray {
 	Client *icons;
 };
 
+typedef struct IPCHook IPCHook;
+struct IPCHook {
+	const char *message;
+	void (*hook)(void);
+};
+
+typedef struct MsgBuf MsgBuf;
+struct MsgBuf {
+    long type;
+    char text[255];
+};
+
 /* function declarations */
 static void applyrules(Client *c);
 static void applyhooks(Client *c);
@@ -289,8 +304,10 @@ static void centeredfloatingmaster(Monitor *m);
 static void togglefullscreen(const Arg *arg);
 static void spreadfloatingcenter(Client *c, float coef);
 static void log(const char *str, ...);
+static void ipclisten();
 
 /* variables */
+key_t ipckey;
 static Systray *systray = NULL;
 static unsigned long systrayorientation = _NET_SYSTEM_TRAY_ORIENTATION_HORZ;
 static const char broken[] = "broken";
@@ -2820,6 +2837,7 @@ main(int argc, char *argv[])
 		die("dwm: cannot open display\n");
 	checkotherwm();
 	setup();
+	ipclisten();
 	scan();
 	run();
 	cleanup();
@@ -2972,4 +2990,22 @@ void spreadfloatingcenter(Client* c, float coef){
 	y = c->mon->wy + ho;
 
 	resizeclient(c, x, y, w, h);
+}
+
+
+void ipcrcv(int sig){
+	int msgid;
+	MsgBuf message;
+	log("signaled\n");
+    msgid = msgget(ipckey, 0666 | IPC_CREAT); 
+	msgrcv (msgid, &message, 255, 1, 0);
+    log("Data Received is : %s \n",  message.text); 
+
+    msgctl(msgid, IPC_RMID, NULL); 
+}
+
+void ipclisten(){
+	log("listening\n");
+    ipckey = ftok("/tmp/dwm.ipc", 1);
+	signal(SIGUSR1, ipcrcv);
 }

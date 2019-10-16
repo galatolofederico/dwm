@@ -6,7 +6,7 @@ include config.mk
 SRC = drw.c dwm.c util.c
 OBJ = ${SRC:.c=.o}
 
-all: options dwm
+all: options dwm dwm-msg
 
 options:
 	@echo dwm build options:
@@ -24,13 +24,21 @@ config.h:
 	@echo creating $@ from config.def.h
 	@cp config.def.h $@
 
+dwm-msg: dwm-msg.o
+	@echo CC -o $@
+	@${CC} -o $@ dwm-msg.c ${LDFLAGS}
+
+dwm-msg.o: dwm-msg.c
+	@echo CC dwm-msg.c
+	@${CC} -c ${CFLAGS} dwm-msg.c
+
 dwm: ${OBJ}
 	@echo CC -o $@
 	@${CC} -o $@ ${OBJ} ${LDFLAGS}
 
 clean:
 	@echo cleaning
-	@rm -f dwm ${OBJ} dwm-${VERSION}.tar.gz
+	@rm -f dwm ${OBJ} dwm-${VERSION}.tar.gz dwm-msg dwm-msg.o
 
 dist: clean
 	@echo creating dist tarball
