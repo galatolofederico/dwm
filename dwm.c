@@ -306,6 +306,11 @@ static void sfc(Client *c, float coef);
 static void log(const char *str, ...);
 static void ipclisten();
 
+/* hooks */
+void next_sfc();
+void all_windows_hook(Client* c, int time);
+
+
 /* variables */
 key_t ipckey;
 static Systray *systray = NULL;
@@ -3015,5 +3020,28 @@ void applyipchooks(const char *message){
 		if(h->message && 
 		strncmp(h->message, message, strlen(h->message)) == 0)
 			(*h->hook)();
+	}
+}
+
+
+int next_sfc_flag = 0;
+void next_sfc(){
+	next_sfc_flag = 1;
+}
+
+Layout* old_layout = NULL;
+void all_windows_hook(Client* c, int time){
+	if(next_sfc_flag){
+		if(time == 0){
+			c->isfloating = 1;
+			for(old_layout = (Layout *)layouts; old_layout != selmon->lt[selmon->sellt]; old_layout++);
+            Arg l = {.v = NULL};
+			setlayout(&l);
+		} else {
+			sfc(c, 0.85);
+			next_sfc_flag = 0;
+			//Arg l = {.v = old_layout};
+			//setlayout(&l);
+		}
 	}
 }

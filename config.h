@@ -47,25 +47,6 @@ static const int topbar             = 1;        /* 0 means bottom bar */
 static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 
 
-int next_sfc_flag = 0;
-void next_sfc(){
-	next_sfc_flag = 1;
-}
-
-Layout* old_layout = NULL;
-void all_windows_hook(Client* c, int time){
-	if(next_sfc_flag){
-		if(time == 0){
-			//TODO: set floating
-		} else {
-			sfc(c, 0.85);
-			next_sfc_flag = 0;
-			//TODO: set previous
-		}
-	}
-}
-
-
 static const Rule rules[] = {
 	/* xprop(1):
 	 *	WM_CLASS(STRING) = instance, class
@@ -100,7 +81,6 @@ static const Layout layouts[] = {
 /* The first element is for all-tag view, following i-th element corresponds to */
 /* tags[i]. Layout is referred using the layouts array index.*/
 static int def_layouts[1 + LENGTH(tags)]  = {4, 0, 0, 0, 0, 0, 0, 0, 0, 2};
-
 
 
 /* key definitions */
