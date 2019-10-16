@@ -170,7 +170,7 @@ typedef struct {
 	unsigned int tags;
 	int isfloating;
 	int monitor;
-	void (*hook)(Client*);
+	void (*hook)(Client*, int);
 } Rule;
 
 typedef struct Systray   Systray;
@@ -193,7 +193,7 @@ struct MsgBuf {
 
 /* function declarations */
 static void applyrules(Client *c);
-static void applyhooks(Client *c);
+static void applyhooks(Client *c, int time);
 static int applysizehints(Client *c, int *x, int *y, int *w, int *h, int interact);
 static void arrange(Monitor *m);
 static void arrangemon(Monitor *m);
@@ -397,7 +397,7 @@ applyrules(Client *c)
 	c->tags = c->tags & TAGMASK ? c->tags & TAGMASK : c->mon->tagset[c->mon->seltags];
 }
 
-applyhooks(Client *c)
+applyhooks(Client *c, int time)
 {
 	const char *class, *instance;
 	unsigned int i;
@@ -417,7 +417,7 @@ applyhooks(Client *c)
 		&& (!r->title || strstr(c->name, r->title))
 		&& (!r->class || strstr(class, r->class))
 		&& (!r->instance || strstr(instance, r->instance)))
-			(*r->hook)(c);
+			(*r->hook)(c, time);
 	}
 	if (ch.res_class)
 		XFree(ch.res_class);
@@ -1425,6 +1425,7 @@ manage(Window w, XWindowAttributes *wa)
 	} else {
 		c->mon = selmon;
 		applyrules(c);
+		applyhooks(c, 0);
 	}
 	/* geometry */
 	c->x = c->oldx = wa->x;
@@ -1477,7 +1478,7 @@ manage(Window w, XWindowAttributes *wa)
 	arrange(c->mon);
 	XMapWindow(dpy, c->win);
 	focus(NULL);
-	applyhooks(c);
+	applyhooks(c, 1);
 }
 
 void
@@ -2974,8 +2975,6 @@ static void log(const char *str, ...){
 
 void sfc(Client* c, float coef){
 	int x,y,w,h,ww,wh,ho,wo;
-
-	c->isfloating = 1;
 
 	ww = c->mon->ww;
 	wh = c->mon->wh;

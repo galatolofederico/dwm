@@ -52,10 +52,14 @@ void next_sfc(){
 	next_sfc_flag = 1;
 }
 
-void all_windows_hook(Client* c){
+void all_windows_hook(Client* c, int time){
 	if(next_sfc_flag){
-		sfc(c, 0.85);
-		next_sfc_flag = 0;
+		if(time == 0){
+			c->isfloating = 1;
+		} else {
+			sfc(c, 0.85);
+			next_sfc_flag = 0;
+		}
 	}
 }
 
