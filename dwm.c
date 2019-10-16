@@ -287,6 +287,7 @@ static void zoom(const Arg *arg);
 static void centeredmaster(Monitor *m);
 static void centeredfloatingmaster(Monitor *m);
 static void togglefullscreen(const Arg *arg);
+static void spreadfloatingcenter(Client *c, float coef);
 static void log(const char *str, ...);
 
 /* variables */
@@ -2953,17 +2954,22 @@ static void log(const char *str, ...){
 	va_end(args);
 }
 
-void threequartersize(Client* c){
-	int x,y,w,h;
-	int ww, wh;
+void spreadfloatingcenter(Client* c, float coef){
+	int x,y,w,h,ww,wh,ho,wo;
+
+	c->isfloating = 1;
+
 	ww = c->mon->ww;
 	wh = c->mon->wh;
-	x = ww/4;
-	y = wh/4;
-	w = 3*ww/4;
-	h = 3*wh/4;
-	x = c->mon->mx + c->mon->mw / 4 + (c->mon->mw / 2 - WIDTH(c) / 2);
-	y = c->mon->my + c->mon->mh / 4 + (c->mon->mh / 2 - HEIGHT(c) / 2);
-	// TODO: fare conti per bene
+
+	w = ww*coef;
+	h = wh*coef;
+
+	wo = (ww - w)/2;
+	ho = (wh - h)/2;
+
+	x = c->mon->wx + wo;
+	y = c->mon->wy + ho;
+
 	resizeclient(c, x, y, w, h);
 }

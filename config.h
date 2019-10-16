@@ -47,8 +47,7 @@ static const int topbar             = 1;        /* 0 means bottom bar */
 static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 
 void hooktest(Client* c){
-	c->isfloating=1;
-	threequartersize(c);
+	spreadfloatingcenter(c, 0.85);
 }
 
 static const Rule rules[] = {
