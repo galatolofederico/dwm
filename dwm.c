@@ -2996,20 +2996,18 @@ void spreadfloatingcenter(Client* c, float coef){
 void ipcrcv(int sig){
 	int msgid;
 	MsgBuf message;
-	log("signaled\n");
+
     msgid = msgget(ipckey, 0666 | IPC_CREAT); 
 	msgrcv (msgid, &message, 255, 1, 0);
-    log("Data Received is : %s \n",  message.text); 
+
 	applyipchooks(message.text);
     msgctl(msgid, IPC_RMID, NULL); 
 }
 
 void ipclisten(){
-	log("listening\n");
     ipckey = ftok("/tmp/dwm.ipc", 1);
 	signal(SIGUSR1, ipcrcv);
 }
-
 
 
 void applyipchooks(const char *message){

@@ -46,9 +46,19 @@ static const int topbar             = 1;        /* 0 means bottom bar */
 /* tagging */
 static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 
-void hooktest(Client* c){
-	spreadfloatingcenter(c, 0.85);
+
+int next_spreadfloatingcenter_flag = 0;
+void next_spreadfloatingcenter(){
+	next_spreadfloatingcenter_flag = 1;
 }
+
+void all_windows_hook(Client* c){
+	if(next_spreadfloatingcenter_flag){
+		spreadfloatingcenter(c, 0.85);
+		next_spreadfloatingcenter_flag = 0;
+	}
+}
+
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -58,13 +68,9 @@ static const Rule rules[] = {
 	/* class      instance    title       tags mask     isfloating   monitor  hook*/
 	{ "Gimp",     NULL,            NULL,       0,            1,           -1, NULL },
 	{ NULL,      "floating",       NULL,       0,            1,           -1, NULL },
-	{ NULL,      "surf",           NULL,       0,            0,           -1, hooktest },
-	
+	{ NULL,       NULL,            NULL,       0,            0,           -1, all_windows_hook },
 };
 
-void next_spreadfloatingcenter(){
-	log("YEEEE");
-}
 
 static const IPCHook ipchooks[] = {
 	{ "next_spreadfloatingcenter",  next_spreadfloatingcenter },	
