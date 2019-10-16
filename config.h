@@ -52,13 +52,15 @@ void next_sfc(){
 	next_sfc_flag = 1;
 }
 
+Layout* old_layout = NULL;
 void all_windows_hook(Client* c, int time){
 	if(next_sfc_flag){
 		if(time == 0){
-			c->isfloating = 1;
+			//TODO: set floating
 		} else {
 			sfc(c, 0.85);
 			next_sfc_flag = 0;
+			//TODO: set previous
 		}
 	}
 }
