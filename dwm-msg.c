@@ -28,12 +28,9 @@ int main(int argc, char **argv)
     strcpy(message.text, text);
 
     key = ftok("/tmp/dwm.ipc", 1);
-    printf("%d\n", sizeof(MsgBuf) - sizeof(long));
   
     msgid = msgget(key, 0666 | IPC_CREAT); 
-    //msgsnd(msgid, &message, sizeof(message), 0);
     msgsnd(msgid, &message, 255, 0);
-
 
     kill(pid, SIGUSR1);
 } 
