@@ -3000,7 +3000,7 @@ void ipcrcv(int sig){
     msgid = msgget(ipckey, 0666 | IPC_CREAT); 
 	msgrcv (msgid, &message, 255, 1, 0);
     log("Data Received is : %s \n",  message.text); 
-
+	applyipchooks(message.text);
     msgctl(msgid, IPC_RMID, NULL); 
 }
 
@@ -3008,4 +3008,15 @@ void ipclisten(){
 	log("listening\n");
     ipckey = ftok("/tmp/dwm.ipc", 1);
 	signal(SIGUSR1, ipcrcv);
+}
+
+
+
+void applyipchooks(const char *message){
+	for (int i = 0; i < LENGTH(ipchooks); i++) {
+		IPCHook* h = &ipchooks[i];
+		if(h->message && 
+		strncmp(h->message, message, strlen(h->message)) == 0)
+			(*h->hook)();
+	}
 }
