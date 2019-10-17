@@ -2979,6 +2979,8 @@ static void log(const char *str, ...){
 
 void sfc(Client *c, XWindowAttributes *a, float coef){
 	c->isfloating = 1;
+	a->x = c->mon->wx + (c->mon->ww - c->mon->ww*coef)/2;
+	a->y = c->mon->wy + (c->mon->wh - c->mon->wh*coef)/2;
 	a->width  = c->mon->ww*coef;
 	a->height = c->mon->wh*coef;	
 }
