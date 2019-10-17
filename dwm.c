@@ -170,7 +170,7 @@ typedef struct {
 	unsigned int tags;
 	int isfloating;
 	int monitor;
-	void (*hook)(Client*, int);
+	void (*hook)(Client*, XWindowAttributes*);
 } Rule;
 
 typedef struct Systray   Systray;
@@ -193,7 +193,7 @@ struct MsgBuf {
 
 /* function declarations */
 static void applyrules(Client *c);
-static void applyhooks(Client *c, int time);
+static void applyhooks(Client *c, XWindowAttributes *a);
 static int applysizehints(Client *c, int *x, int *y, int *w, int *h, int interact);
 static void arrange(Monitor *m);
 static void arrangemon(Monitor *m);
@@ -302,13 +302,13 @@ static void zoom(const Arg *arg);
 static void centeredmaster(Monitor *m);
 static void centeredfloatingmaster(Monitor *m);
 static void togglefullscreen(const Arg *arg);
-static void sfc(Client *c, float coef);
+static void sfc(Client *c, XWindowAttributes *a, float coef);
 static void log(const char *str, ...);
 static void ipclisten();
 
 /* hooks */
 void next_sfc();
-void all_windows_hook(Client* c, int time);
+void all_windows_hook(Client *c, XWindowAttributes *a);
 
 
 /* variables */
@@ -402,7 +402,7 @@ applyrules(Client *c)
 	c->tags = c->tags & TAGMASK ? c->tags & TAGMASK : c->mon->tagset[c->mon->seltags];
 }
 
-applyhooks(Client *c, int time)
+applyhooks(Client *c, XWindowAttributes *wa)
 {
 	const char *class, *instance;
 	unsigned int i;
@@ -416,13 +416,14 @@ applyhooks(Client *c, int time)
 	class    = ch.res_class ? ch.res_class : broken;
 	instance = ch.res_name  ? ch.res_name  : broken;
 
+	log("applyhooks: %p\n",wa);
 	for (i = 0; i < LENGTH(rules); i++) {
 		r = &rules[i];
 		if (r->hook 
 		&& (!r->title || strstr(c->name, r->title))
 		&& (!r->class || strstr(class, r->class))
 		&& (!r->instance || strstr(instance, r->instance)))
-			(*r->hook)(c, time);
+			r->hook(c, wa);
 	}
 	if (ch.res_class)
 		XFree(ch.res_class);
@@ -1430,7 +1431,8 @@ manage(Window w, XWindowAttributes *wa)
 	} else {
 		c->mon = selmon;
 		applyrules(c);
-		applyhooks(c, 0);
+		log("manage: %p\n",wa);
+		applyhooks(c, wa);
 	}
 	/* geometry */
 	c->x = c->oldx = wa->x;
@@ -1450,6 +1452,7 @@ manage(Window w, XWindowAttributes *wa)
 	c->bw = borderpx;
 
 	wc.border_width = c->bw;
+	//applyhooks(c, 1);
 	XConfigureWindow(dpy, w, CWBorderWidth, &wc);
 	XSetWindowBorder(dpy, w, scheme[SchemeNorm].border->pix);
 	configure(c); /* propagates border_width, if size doesn't change */
@@ -1471,6 +1474,7 @@ manage(Window w, XWindowAttributes *wa)
 			c->y = c->mon->my + (c->mon->mh / 2 - HEIGHT(c) / 2);
 		}
 	}
+	//applyhooks(c, 2);
 	attach(c);
 	attachstack(c);
 	XChangeProperty(dpy, root, netatom[NetClientList], XA_WINDOW, 32, PropModeAppend,
@@ -1483,7 +1487,7 @@ manage(Window w, XWindowAttributes *wa)
 	arrange(c->mon);
 	XMapWindow(dpy, c->win);
 	focus(NULL);
-	applyhooks(c, 1);
+	//applyhooks(c, 3);
 }
 
 void
@@ -2978,8 +2982,14 @@ static void log(const char *str, ...){
 	va_end(args);
 }
 
-void sfc(Client* c, float coef){
-	int x,y,w,h,ww,wh,ho,wo;
+void sfc(Client *c, XWindowAttributes *a, float coef){
+	c->isfloating = 1;
+	a->width  = c->mon->ww*coef;
+	a->height = c->mon->wh*coef;
+	
+	//a->height = 10;
+	
+	/*int x,y,w,h,ww,wh,ho,wo;
 
 	ww = c->mon->ww;
 	wh = c->mon->wh;
@@ -2993,7 +3003,8 @@ void sfc(Client* c, float coef){
 	x = c->mon->wx + wo;
 	y = c->mon->wy + ho;
 
-	resizeclient(c, x, y, w, h);
+	resizeclient(c, x, y, w, h);*/
+	
 }
 
 
@@ -3030,18 +3041,21 @@ void next_sfc(){
 }
 
 Layout* old_layout = NULL;
-void all_windows_hook(Client* c, int time){
+void all_windows_hook(Client* c, XWindowAttributes *a){
 	if(next_sfc_flag){
-		if(time == 0){
+		/*if(time == 0){
 			c->isfloating = 1;
-			for(old_layout = (Layout *)layouts; old_layout != selmon->lt[selmon->sellt]; old_layout++);
-            Arg l = {.v = NULL};
-			setlayout(&l);
-		} else {
+			//for(old_layout = (Layout *)layouts; old_layout != selmon->lt[selmon->sellt]; old_layout++);
+            //Arg l = {.v = NULL};
+			//setlayout(&l);
+		} else if (time == 1) {
 			sfc(c, 0.85);
 			next_sfc_flag = 0;
 			//Arg l = {.v = old_layout};
 			//setlayout(&l);
-		}
+		}*/
+		log("in hook: %p\n", a);
+		sfc(c, a, 0.85);
+		next_sfc_flag = 0;
 	}
 }
