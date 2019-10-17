@@ -416,7 +416,6 @@ applyhooks(Client *c, XWindowAttributes *wa)
 	class    = ch.res_class ? ch.res_class : broken;
 	instance = ch.res_name  ? ch.res_name  : broken;
 
-	log("applyhooks: %p\n",wa);
 	for (i = 0; i < LENGTH(rules); i++) {
 		r = &rules[i];
 		if (r->hook 
@@ -1431,7 +1430,6 @@ manage(Window w, XWindowAttributes *wa)
 	} else {
 		c->mon = selmon;
 		applyrules(c);
-		log("manage: %p\n",wa);
 		applyhooks(c, wa);
 	}
 	/* geometry */
@@ -1452,7 +1450,6 @@ manage(Window w, XWindowAttributes *wa)
 	c->bw = borderpx;
 
 	wc.border_width = c->bw;
-	//applyhooks(c, 1);
 	XConfigureWindow(dpy, w, CWBorderWidth, &wc);
 	XSetWindowBorder(dpy, w, scheme[SchemeNorm].border->pix);
 	configure(c); /* propagates border_width, if size doesn't change */
@@ -1474,7 +1471,6 @@ manage(Window w, XWindowAttributes *wa)
 			c->y = c->mon->my + (c->mon->mh / 2 - HEIGHT(c) / 2);
 		}
 	}
-	//applyhooks(c, 2);
 	attach(c);
 	attachstack(c);
 	XChangeProperty(dpy, root, netatom[NetClientList], XA_WINDOW, 32, PropModeAppend,
@@ -1487,7 +1483,6 @@ manage(Window w, XWindowAttributes *wa)
 	arrange(c->mon);
 	XMapWindow(dpy, c->win);
 	focus(NULL);
-	//applyhooks(c, 3);
 }
 
 void
@@ -2985,28 +2980,8 @@ static void log(const char *str, ...){
 void sfc(Client *c, XWindowAttributes *a, float coef){
 	c->isfloating = 1;
 	a->width  = c->mon->ww*coef;
-	a->height = c->mon->wh*coef;
-	
-	//a->height = 10;
-	
-	/*int x,y,w,h,ww,wh,ho,wo;
-
-	ww = c->mon->ww;
-	wh = c->mon->wh;
-
-	w = ww*coef;
-	h = wh*coef;
-
-	wo = (ww - w)/2;
-	ho = (wh - h)/2;
-
-	x = c->mon->wx + wo;
-	y = c->mon->wy + ho;
-
-	resizeclient(c, x, y, w, h);*/
-	
+	a->height = c->mon->wh*coef;	
 }
-
 
 void ipcrcv(int sig){
 	int msgid;
@@ -3043,18 +3018,6 @@ void next_sfc(){
 Layout* old_layout = NULL;
 void all_windows_hook(Client* c, XWindowAttributes *a){
 	if(next_sfc_flag){
-		/*if(time == 0){
-			c->isfloating = 1;
-			//for(old_layout = (Layout *)layouts; old_layout != selmon->lt[selmon->sellt]; old_layout++);
-            //Arg l = {.v = NULL};
-			//setlayout(&l);
-		} else if (time == 1) {
-			sfc(c, 0.85);
-			next_sfc_flag = 0;
-			//Arg l = {.v = old_layout};
-			//setlayout(&l);
-		}*/
-		log("in hook: %p\n", a);
 		sfc(c, a, 0.85);
 		next_sfc_flag = 0;
 	}
