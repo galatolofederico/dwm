@@ -3,6 +3,8 @@
 This is a fork of version 6.1 of the awesome [Dynamic Window Manager](https://dwm.suckless.org/) from [suckless](https://suckless.org).
 
 I have implemented the following functionalities:
+* IPC hooks
+* `dwm-msg` for sending IPC messages
 * Custom windows hooks (configurable in the `rules`)
 * Spawn floating windows in the center
 * Toggle window full screen mode
