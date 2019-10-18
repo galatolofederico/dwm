@@ -118,6 +118,7 @@ struct Client {
 	Client *snext;
 	Monitor *mon;
 	Window win;
+	int hidden;
 };
 
 typedef struct {
@@ -302,6 +303,7 @@ static void zoom(const Arg *arg);
 static void centeredmaster(Monitor *m);
 static void centeredfloatingmaster(Monitor *m);
 static void togglefullscreen(const Arg *arg);
+static void (const Arg *arg);
 static void sfc(Client *c, XWindowAttributes *a, float coef);
 static void log(const char *str, ...);
 static void ipclisten();
@@ -1432,6 +1434,7 @@ manage(Window w, XWindowAttributes *wa)
 		applyrules(c);
 		applyhooks(c, wa);
 	}
+	c->hidden = 0;
 	/* geometry */
 	c->x = c->oldx = wa->x;
 	c->y = c->oldy = wa->y;
@@ -2155,9 +2158,11 @@ tagmon(const Arg *arg)
 void
 tile(Monitor *m)
 {
-	unsigned int i, n, h, mw, my, ty;
+	unsigned int i, n, h, mw, my, ty, nhidden;
 	Client *c;
-
+	for (n = 0, c = nexttiled(m->clients), nhidden = 0; c; c = nexttiled(c->next), n++)
+		if(c->hidden) nhidden += 1;
+			
 	for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
 	if (n == 0)
 		return;
@@ -2172,8 +2177,11 @@ tile(Monitor *m)
 			resize(c, m->wx, m->wy + my, mw - (2*c->bw), h - (2*c->bw), 0);
 			my += HEIGHT(c);
 		} else {
-			h = (m->wh - ty) / (n - i);
-			resize(c, m->wx + mw, m->wy + ty, m->ww - mw - (2*c->bw), h - (2*c->bw), 0);
+			h = (m->wh - ty - 10*nhidden) / (n - i - nhidden);
+			if(c->hidden)
+				resize(c, m->wx + mw, m->wy + ty, m->ww - mw - (2*c->bw), 10, 0);
+			else
+				resize(c, m->wx + mw, m->wy + ty, m->ww - mw - (2*c->bw), h - (2*c->bw), 0);
 			ty += HEIGHT(c);
 		}
 }
@@ -2962,6 +2970,15 @@ void togglefullscreen(const Arg *arg)
 		setfullscreen(selmon->sel, 1);
     else if (selmon->sel->isfullscreen)
 		setfullscreen(selmon->sel, 0);
+}
+
+void togglehidden(const Arg *arg)
+{
+    if (!selmon->sel)
+		return;
+
+    selmon->sel->hidden = !selmon->sel->hidden;
+	tile(selmon);
 }
 
 FILE* logfile = NULL;
