@@ -412,8 +412,6 @@ applyhooks(Client *c, XWindowAttributes *wa)
 	Monitor *m;
 	XClassHint ch = { NULL, NULL };
 
-	c->isfloating = 0;
-	c->tags = 0;
 	XGetClassHint(dpy, c->win, &ch);
 	class    = ch.res_class ? ch.res_class : broken;
 	instance = ch.res_name  ? ch.res_name  : broken;
@@ -430,7 +428,6 @@ applyhooks(Client *c, XWindowAttributes *wa)
 		XFree(ch.res_class);
 	if (ch.res_name)
 		XFree(ch.res_name);
-	c->tags = c->tags & TAGMASK ? c->tags & TAGMASK : c->mon->tagset[c->mon->seltags];
 }
 
 

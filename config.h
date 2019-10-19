@@ -53,9 +53,9 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor  hook*/
+	{ NULL,       NULL,            NULL,       0,            0,           -1, all_windows_hook },
 	{ "Gimp",     NULL,            NULL,       0,            1,           -1, NULL },
 	{ NULL,      "floating",       NULL,       0,            1,           -1, NULL },
-	{ NULL,       NULL,            NULL,       0,            0,           -1, all_windows_hook },
 };
 
 
