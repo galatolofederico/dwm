@@ -303,7 +303,7 @@ static void zoom(const Arg *arg);
 static void centeredmaster(Monitor *m);
 static void centeredfloatingmaster(Monitor *m);
 static void togglefullscreen(const Arg *arg);
-static void (const Arg *arg);
+static void togglehidden(const Arg *arg);
 static void sfc(Client *c, XWindowAttributes *a, float coef);
 static void log(const char *str, ...);
 static void ipclisten();
@@ -2155,10 +2155,14 @@ tagmon(const Arg *arg)
 void
 tile(Monitor *m)
 {
-	unsigned int i, n, h, mw, my, ty, nhidden;
+	unsigned int i, n, h, mw, my, ty, nmasters, mhidden, thidden, hiddenheight=30;
 	Client *c;
-	for (n = 0, c = nexttiled(m->clients), nhidden = 0; c; c = nexttiled(c->next), n++)
-		if(c->hidden) nhidden += 1;
+	for (i = 0, mhidden = thidden = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
+		if(c->hidden)
+			if (i < m->nmaster)
+				mhidden += 1;
+			else
+				thidden += 1;
 			
 	for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
 	if (n == 0)
@@ -2168,15 +2172,19 @@ tile(Monitor *m)
 		mw = m->nmaster ? m->ww * m->mfact : 0;
 	else
 		mw = m->ww;
-	for (i = my = ty = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
+	for (i = my = ty = 0, c = nexttiled(m->clients), nmasters = 0; c; c = nexttiled(c->next), i++)
 		if (i < m->nmaster) {
-			h = (m->wh - my) / (MIN(n, m->nmaster) - i);
-			resize(c, m->wx, m->wy + my, mw - (2*c->bw), h - (2*c->bw), 0);
+			nmasters += 1;
+			h = (m->wh - mhidden*hiddenheight) / (MIN(n, m->nmaster) - mhidden);
+			if(c->hidden)
+				resize(c, m->wx, m->wy + my, mw - (2*c->bw), hiddenheight - (2*c->bw), 0);
+			else
+				resize(c, m->wx, m->wy + my, mw - (2*c->bw), h - (2*c->bw), 0);
 			my += HEIGHT(c);
 		} else {
-			h = (m->wh - ty - 10*nhidden) / (n - i - nhidden);
+			h = (m->wh - thidden*hiddenheight) / (n - nmasters - thidden);
 			if(c->hidden)
-				resize(c, m->wx + mw, m->wy + ty, m->ww - mw - (2*c->bw), 10, 0);
+				resize(c, m->wx + mw, m->wy + ty, m->ww - mw - (2*c->bw), hiddenheight - (2*c->bw), 0);
 			else
 				resize(c, m->wx + mw, m->wy + ty, m->ww - mw - (2*c->bw), h - (2*c->bw), 0);
 			ty += HEIGHT(c);
