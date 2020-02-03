@@ -24,7 +24,7 @@ static const char *favourites_apps[] = { "/bin/sh", "-c", " ~/bin/dmenu_favourit
 static const char *favourites_sett[] = { "/bin/sh", "-c", " ~/bin/dmenu_favourites ~/.config/favourites/settings", NULL };
 static const char *favourites_exit[] = { "/bin/sh", "-c", " ~/bin/dmenu_favourites ~/.config/favourites/exit", NULL };
 static const char *clipmenu[] = { "/usr/bin/clipmenu", NULL };
-
+static const char *dmenu_emoju[] = { "/bin/sh", "-c", " ~/bin/dmenu-emoji", NULL };
 
 
 static const char dmenufont[]       = "DejaVuSansMono Nerd Font:style=Book:size=10";
@@ -113,6 +113,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_o,      spawn,      	   {.v = favourites_apps} },
 	{ MODKEY,                       XK_s,      spawn,      	   {.v = favourites_sett} },
 	{ MODKEY,                       XK_Escape, spawn,      	   {.v = favourites_exit} },
+	{ MODKEY,                       XK_e,      spawn,      	   {.v = dmenu_emoju} },
 	{ MODKEY,                       XK_f,     togglefullscreen,{0} },
 	{ MODKEY,                       XK_x,      togglehidden,   {0} },
 	{ MODKEY,                       XK_g,      setlayout,      {.v = &layouts[4] } },
