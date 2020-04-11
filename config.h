@@ -11,7 +11,8 @@ static const Bool toptab            = False;         /* False means bottom tab b
 
 /* appearance */
 static const char *fonts[] = {
-   "DejaVuSansMono Nerd Font:style=Book:size=12"
+   "DejaVuSansMono Nerd Font:style=Book:size=12",
+   "Noto Color Emoji"
 };
 static const char *upvol[]   =   { "/usr/bin/pactl", "set-sink-volume", "0", "+5%",     NULL };
 static const char *downvol[] =   { "/usr/bin/pactl", "set-sink-volume", "0", "-5%",     NULL };
@@ -28,7 +29,7 @@ static const char *dmenu_emoju[] = { "/bin/sh", "-c", " ~/bin/dmenu-emoji", NULL
 static const char *bitwarden_dmenu[] = { "/bin/sh", "-c", " ~/bin/bitwarden_dmenu", NULL };
 
 
-static const char dmenufont[]       = "DejaVuSansMono Nerd Font:style=Book:size=10";
+static const char dmenufont[]       = "DejaVuSansMono Nerd Font:style=Book:size=10,Noto Color Emoji";
 static const char normbordercolor[] = "#002b36";
 static const char normbgcolor[]     = "#002b36";
 static const char normfgcolor[]     = "#657b83";
