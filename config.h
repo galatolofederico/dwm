@@ -27,6 +27,7 @@ static const char *favourites_exit[] = { "/bin/sh", "-c", " ~/bin/dmenu_favourit
 static const char *clipmenu[] = { "/usr/bin/clipmenu", NULL };
 static const char *dmenu_emoju[] = { "/bin/sh", "-c", " ~/bin/dmenu-emoji", NULL };
 static const char *bitwarden_dmenu[] = { "/bin/sh", "-c", " ~/bin/bitwarden_dmenu", NULL };
+static const char *favourites_me[] = { "/bin/sh", "-c", " ~/bin/dmenu_favourites ~/.config/favourites/me", NULL };
 
 
 static const char dmenufont[]       = "DejaVuSansMono Nerd Font:style=Book:size=10,Noto Color Emoji";
@@ -117,7 +118,8 @@ static Key keys[] = {
 	{ MODKEY,                       XK_Escape, spawn,      	   {.v = favourites_exit} },
 	{ MODKEY,                       XK_e,      spawn,      	   {.v = dmenu_emoju} },
 	{ MODKEY|ShiftMask,             XK_p,      spawn,      	   {.v = bitwarden_dmenu} },
-	{ MODKEY,                       XK_f,     togglefullscreen,{0} },
+	{ MODKEY|ShiftMask,             XK_m,      spawn,      	   {.v = favourites_me} },
+	{ MODKEY,                       XK_f,      togglefullscreen,{0} },
 	{ MODKEY,                       XK_x,      togglehidden,   {0} },
 	{ MODKEY,                       XK_g,      setlayout,      {.v = &layouts[4] } },
 	{ MODKEY,                       XK_space,  spawn,          {.v = j4cmd } },
@@ -134,13 +136,10 @@ static Key keys[] = {
 	{ MODKEY,                       XK_Tab,    view,           {0} },
 	{ MODKEY|ShiftMask,             XK_q,      killclient,     {0} },
 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
-	//{ MODKEY|ShiftMask,             XK_f,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
 	{ MODKEY,                       XK_c,      setlayout,      {.v = &layouts[3]} },
  	{ MODKEY|ShiftMask,             XK_j,      cyclelayout,    {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_k,      cyclelayout,    {.i = +1 } },
-	//{ MODKEY,                       XK_o,      setlayout,      {.v = &layouts[4]} },
-	//{ MODKEY,                       XK_space,  setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_f,      togglefloating, {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
