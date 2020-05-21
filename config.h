@@ -14,21 +14,6 @@ static const char *fonts[] = {
    "DejaVuSansMono Nerd Font:style=Book:size=12",
    "Noto Color Emoji"
 };
-static const char *upvol[]   =   { "/usr/bin/pactl", "set-sink-volume", "0", "+5%",     NULL };
-static const char *downvol[] =   { "/usr/bin/pactl", "set-sink-volume", "0", "-5%",     NULL };
-static const char *mutevol[] =   { "/usr/bin/pactl", "set-sink-mute",   "0", "toggle",  NULL };
-static const char *lightup[] =   { "/usr/bin/xbacklight", "-inc",   "5", NULL };
-static const char *lightdown[] = { "/usr/bin/xbacklight", "-dec",   "5", NULL };
-static const char *full_screenshot[] = { "/bin/bash", "-c", "escrotum ~/Pictures/Screenshots/$(date +%s).png && notify-send 'Screenshot saved'", NULL };
-static const char *sel_screenshot[] = { "/usr/bin/escrotum", "-s", "-C", NULL };
-static const char *favourites_apps[] = { "/bin/sh", "-c", " ~/bin/dmenu_favourites ~/.config/favourites/apps", NULL };
-static const char *favourites_sett[] = { "/bin/sh", "-c", " ~/bin/dmenu_favourites ~/.config/favourites/settings", NULL };
-static const char *favourites_exit[] = { "/bin/sh", "-c", " ~/bin/dmenu_favourites ~/.config/favourites/exit", NULL };
-static const char *clipmenu[] = { "/usr/bin/clipmenu", NULL };
-static const char *dmenu_emoju[] = { "/bin/sh", "-c", " ~/bin/dmenu-emoji", NULL };
-static const char *bitwarden_dmenu[] = { "/bin/sh", "-c", " ~/bin/bitwarden_dmenu", NULL };
-static const char *favourites_me[] = { "/bin/sh", "-c", " ~/bin/dmenu_favourites ~/.config/favourites/me", NULL };
-
 
 static const char dmenufont[]       = "DejaVuSansMono Nerd Font:style=Book:size=10,Noto Color Emoji";
 static const char normbordercolor[] = "#002b36";
@@ -46,8 +31,39 @@ static const int showsystray        = 1;        /* 0 means no systray */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 
+
+static const char *upvol[]   =   { "/usr/bin/pactl", "set-sink-volume", "0", "+5%",     NULL };
+static const char *downvol[] =   { "/usr/bin/pactl", "set-sink-volume", "0", "-5%",     NULL };
+static const char *mutevol[] =   { "/usr/bin/pactl", "set-sink-mute",   "0", "toggle",  NULL };
+
+static const char *lightup[] =   { "/usr/bin/xbacklight", "-inc",   "5", NULL };
+static const char *lightdown[] = { "/usr/bin/xbacklight", "-dec",   "5", NULL };
+
+static const char *musicplay[] = { "/usr/bin/playerctl", "play-pause", NULL};
+static const char *musicstop[] = { "/usr/bin/playerctl", "stop", NULL};
+static const char *musicprev[] = { "/usr/bin/playerctl", "previous", NULL};
+static const char *musicnext[] = { "/usr/bin/playerctl", "next", NULL};
+
+
+static const char *full_screenshot[] = { "/bin/bash", "-c", "escrotum ~/Pictures/Screenshots/$(date +%s).png && notify-send 'Screenshot saved'", NULL };
+static const char *sel_screenshot[] = { "/usr/bin/escrotum", "-s", "-C", NULL };
+
+static const char *favourites_apps[] = { "/bin/sh", "-c", " ~/bin/dmenu_favourites ~/.config/favourites/apps", NULL };
+static const char *favourites_sett[] = { "/bin/sh", "-c", " ~/bin/dmenu_favourites ~/.config/favourites/settings", NULL };
+static const char *favourites_exit[] = { "/bin/sh", "-c", " ~/bin/dmenu_favourites ~/.config/favourites/exit", NULL };
+
+static char dmenumon[2] = "0";
+static const char *clipmenu[] = { "/usr/bin/clipmenu", NULL };
+static const char *dmenu_emoju[] = { "/bin/sh", "-c", " ~/bin/dmenu-emoji", NULL };
+static const char *bitwarden_dmenu[] = { "/bin/sh", "-c", " ~/bin/bitwarden_dmenu", NULL };
+static const char *favourites_me[] = { "/bin/sh", "-c", " ~/bin/dmenu_favourites ~/.config/favourites/me", NULL };
+static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor, "-sf", selfgcolor, NULL };
+static const char *j4cmd[] = {"/usr/local/bin/j4-dmenu-desktop"};
+static const char *termcmd[]  = { "st", NULL };
+
+
 /* tagging */
-static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
 
 
 static const Rule rules[] = {
@@ -83,33 +99,39 @@ static const Layout layouts[] = {
 /* default layout per tags */
 /* The first element is for all-tag view, following i-th element corresponds to */
 /* tags[i]. Layout is referred using the layouts array index.*/
-static int def_layouts[1 + LENGTH(tags)]  = {4, 0, 0, 0, 0, 0, 0, 0, 0, 2};
+static int def_layouts[1 + LENGTH(tags)]  = {4, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2};
 
 
 /* key definitions */
 #define MODKEY Mod4Mask
 #define TAGKEYS(KEY,TAG) \
 	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
-	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
 	{ MODKEY|ShiftMask,             KEY,      tag,            {.ui = 1 << TAG} }, \
-	{ MODKEY|ControlMask|ShiftMask, KEY,      toggletag,      {.ui = 1 << TAG} },
 
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
 /* commands */
-static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor, "-sf", selfgcolor, NULL };
-static const char *j4cmd[] = {"/usr/local/bin/j4-dmenu-desktop"};
-static const char *termcmd[]  = { "st", NULL };
+
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
+	// Volume control
 	{ 0,              XF86XK_AudioLowerVolume, spawn,          {.v = downvol } },
 	{ 0,                     XF86XK_AudioMute, spawn,          {.v = mutevol } },
 	{ 0,              XF86XK_AudioRaiseVolume, spawn,          {.v = upvol   } },
+
+	// Brightness control
 	{ 0,           XF86XK_MonBrightnessUp,     spawn,          {.v = lightup   } },
 	{ 0,           XF86XK_MonBrightnessDown,   spawn,          {.v = lightdown   } },
+
+	// Media control
+    { 0,           XF86XK_AudioPlay,           spawn,          {.v = musicplay  } },
+	{ 0,           XF86XK_AudioStop,           spawn,          {.v = musicstop  } },
+	{ 0,           XF86XK_AudioNext,           spawn,          {.v = musicnext  } },
+	{ 0,           XF86XK_AudioPrev,           spawn,          {.v = musicprev  } },
+	
+	// Spawn shortcuts
 	{ 0,                            XK_Print,  spawn,          {.v = sel_screenshot   } },
 	{ MODKEY,                       XK_v,      spawn,          {.v = clipmenu   } },
 	{ ShiftMask,                    XK_Print,  spawn,          {.v = full_screenshot   } },
@@ -119,13 +141,23 @@ static Key keys[] = {
 	{ MODKEY,                       XK_e,      spawn,      	   {.v = dmenu_emoju} },
 	{ MODKEY|ShiftMask,             XK_p,      spawn,      	   {.v = bitwarden_dmenu} },
 	{ MODKEY|ShiftMask,             XK_m,      spawn,      	   {.v = favourites_me} },
-	{ MODKEY,                       XK_f,      togglefullscreen,{0} },
-	{ MODKEY,                       XK_x,      togglehidden,   {0} },
-	{ MODKEY,                       XK_g,      setlayout,      {.v = &layouts[4] } },
-	{ MODKEY,                       XK_space,  spawn,          {.v = j4cmd } },
 	{ MODKEY|ShiftMask,             XK_space,  spawn,          {.v = dmenucmd } },
 	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
+	{ MODKEY,                       XK_space,  spawn,          {.v = j4cmd } },
+
+	// Visibility controls
+	{ MODKEY,                       XK_f,      togglefullscreen,{0} },
+	{ MODKEY,                       XK_x,      togglehidden,   {0} },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
+	{ MODKEY|ShiftMask,             XK_f,      togglefloating, {0} },
+
+	// Layouts switch
+	{ MODKEY,                       XK_g,      setlayout,      {.v = &layouts[4] } },
+	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
+	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
+	{ MODKEY,                       XK_c,      setlayout,      {.v = &layouts[3]} },
+
+	// Layout controls
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
 	{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
@@ -134,19 +166,15 @@ static Key keys[] = {
 	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
 	{ MODKEY,                       XK_p,      zoom,           {0} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
+
+	// Kill client
 	{ MODKEY|ShiftMask,             XK_q,      killclient,     {0} },
-	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
-	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
-	{ MODKEY,                       XK_c,      setlayout,      {.v = &layouts[3]} },
- 	{ MODKEY|ShiftMask,             XK_j,      cyclelayout,    {.i = -1 } },
-	{ MODKEY|ShiftMask,             XK_k,      cyclelayout,    {.i = +1 } },
-	{ MODKEY|ShiftMask,             XK_f,      togglefloating, {0} },
-	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
-	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
+
+	// Multi monitor controls
 	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
 	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
-	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
-	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
+
+	// Desktop controls
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
@@ -156,6 +184,8 @@ static Key keys[] = {
 	TAGKEYS(                        XK_7,                      6)
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
+	TAGKEYS(                        XK_0,                      9)
+	
 	{ MODKEY|ShiftMask,             XK_e,      quit,           {0} },
 };
 
