@@ -65,16 +65,17 @@ static const char *termcmd[]  = { "st", NULL };
 /* tagging */
 static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
 
-
 static const Rule rules[] = {
 	/* xprop(1):
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor  hook*/
-	{ NULL,       NULL,            NULL,       0,            0,           -1, all_windows_hook },
-	{ "Gimp",     NULL,            NULL,       0,            1,           -1, NULL },
-	{ NULL,      "floating",       NULL,       0,            1,           -1, NULL },
+	/* class      instance         title      tags mask     isfloating     isterminal      noswallow    monitor    hook */
+	{ NULL,       NULL,            NULL,       0,            0,            0,              0,           -1,        all_windows_hook },
+	{ "Gimp",     NULL,            NULL,       0,            1,            0,              0,           -1,        NULL },
+	{ NULL,       "floating",      NULL,       0,            1,            0,              0,           -1,        NULL },
+	{ "st",       NULL,            NULL,       0,            0,            1,              1,           -1,        NULL },
 };
 
 

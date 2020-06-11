@@ -19,5 +19,6 @@ I have applied the following patches:
 * dwm-gaplessgrid-6.1
 * dwm-6.1-pertag-tab-v2b
 * dwm-noborder-6.1.diff
+* dwm-swallow-6.1.diff
 
 my `config.h` requires: `nerd-fonts-complete`
