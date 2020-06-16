@@ -322,7 +322,8 @@ static void ipclisten();
 /* hooks */
 void next_sfc();
 void all_windows_hook(Client *c, XWindowAttributes *a);
-
+void set_doswallow();
+void unset_doswallow();
 
 /* variables */
 key_t ipckey;
@@ -363,6 +364,7 @@ static Monitor *mons, *selmon;
 static Window root;
 
 static xcb_connection_t *xcon;
+static int doswallow = 1;
 
 /* configuration, allows nested code to access above variables */
 #include "config.h"
@@ -1561,7 +1563,7 @@ manage(Window w, XWindowAttributes *wa)
 	if (!term)
 		arrange(c->mon);
 	XMapWindow(dpy, c->win);
-	if (term)
+	if (term && doswallow)
 		swallow(term, c);
 	focus(NULL);
 }
@@ -2929,6 +2931,7 @@ isdescprocess(pid_t p, pid_t c)
 Client *
 termforwin(const Client *w)
 {
+	if(!doswallow) return NULL;
 	Client *c;
 	Monitor *m;
 
@@ -3259,4 +3262,12 @@ void all_windows_hook(Client* c, XWindowAttributes *a){
 		sfc(c, a, 0.85);
 		next_sfc_flag = 0;
 	}
+}
+
+void set_doswallow(){
+	doswallow = 1;
+}
+
+void unset_doswallow(){
+	doswallow = 0;
 }

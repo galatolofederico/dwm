@@ -80,7 +80,9 @@ static const Rule rules[] = {
 
 
 static const IPCHook ipchooks[] = {
-	{ "next_sfc",  next_sfc },	
+	{ "next_sfc",  next_sfc },
+	{ "swallow", set_doswallow },
+	{ "noswallow", unset_doswallow }
 };
 
 /* layout(s) */
