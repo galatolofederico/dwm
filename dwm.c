@@ -166,6 +166,7 @@ struct Monitor {
 	int tab_widths[MAXTABS];
 	const Layout *lt[2];
 	Pertag *pertag;
+	Window *windowwallpaper;
 };
 
 typedef struct {
@@ -729,6 +730,8 @@ cleanupmon(Monitor *mon)
 	XDestroyWindow(dpy, mon->barwin);
 	XUnmapWindow(dpy, mon->tabwin);
 	XDestroyWindow(dpy, mon->tabwin);
+	XUnmapWindow(dpy, mon->windowwallpaper);
+    XDestroyWindow(dpy, mon->windowwallpaper);
 	free(mon);
 }
 
@@ -1496,6 +1499,17 @@ manage(Window w, XWindowAttributes *wa)
 	Client *c, *t, *term = NULL;
 	Window trans = None;
 	XWindowChanges wc;
+
+    char windowname[256];
+    gettextprop(w, XA_WM_NAME, windowname, sizeof windowname);
+    if (!strcmp(windowname, "windowwallpaper")) {
+        selmon->windowwallpaper = w;
+        XMoveResizeWindow(dpy, w, 0, drw->fonts[0]->h + 2, selmon->mw, selmon->mh);
+        XSetWindowBorderWidth(dpy, w, 0);
+        XLowerWindow(dpy, w);
+        XMapWindow(dpy, w);
+        return;
+    }
 
 	c = ecalloc(1, sizeof(Client));
 	c->win = w;

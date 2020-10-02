@@ -3,6 +3,7 @@
 This is my own fork of the awesome [Dynamic Window Manager](https://dwm.suckless.org/) (version 6.1) from [suckless](https://suckless.org).
 
 I have implemented the following functionalities:
+* Use any window as wallpaper (gifs/videos/whatever) you just have to create a window with `_NET_WM_NAME = windowwallpaper`
 * IPC hooks
 * `dwm-msg` for sending IPC messages
 * Hidable windows in tiling mode  
