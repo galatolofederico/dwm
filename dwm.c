@@ -1501,10 +1501,11 @@ manage(Window w, XWindowAttributes *wa)
 	XWindowChanges wc;
 
     char windowname[256];
+	int bw = drw->fonts[0]->h + 2;
     gettextprop(w, XA_WM_NAME, windowname, sizeof windowname);
     if (!strcmp(windowname, "windowwallpaper")) {
         selmon->windowwallpaper = w;
-        XMoveResizeWindow(dpy, w, 0, drw->fonts[0]->h + 2, selmon->mw, selmon->mh);
+        XMoveResizeWindow(dpy, w, 0, bw, selmon->mw, selmon->mh - bw);
         XSetWindowBorderWidth(dpy, w, 0);
         XLowerWindow(dpy, w);
         XMapWindow(dpy, w);

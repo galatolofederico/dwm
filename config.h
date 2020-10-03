@@ -16,12 +16,12 @@ static const char *fonts[] = {
 };
 
 static const char dmenufont[]       = "DejaVuSansMono Nerd Font:style=Book:size=10,Noto Color Emoji";
-static const char normbordercolor[] = "#002b36";
-static const char normbgcolor[]     = "#002b36";
-static const char normfgcolor[]     = "#657b83";
+static const char normbordercolor[] = "#282828";
+static const char normbgcolor[]     = "#282828";
+static const char normfgcolor[]     = "#eeeeee";
 static const char selbordercolor[]  = "#93a1a1";
 static const char selbgcolor[]      = "#93a1a1";
-static const char selfgcolor[]      = "#002b36";
+static const char selfgcolor[]      = "#282828";
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const unsigned int systraypinning = 0;   /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
